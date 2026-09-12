@@ -11,14 +11,14 @@ depends=('python' 'python-pyqt6' 'python-pyqt6-webengine' 'qt6-webengine' 'pytho
 makedepends=('git' 'python-build' 'python-installer' 'python-wheel' 'python-setuptools')
 provides=('zapzap')
 conflicts=('zapzap-git')
-source=("local_source"::"file://$PWD")
-sha256sums=('SKIP')
 
 build() {
+  cd "$startdir"
   python -m build --wheel --no-isolation
 }
 
 package() {
+  cd "$startdir"
   python -m installer --destdir="$pkgdir" dist/*.whl
   if [ -f "zapzap/assets/icons/com.rtosta.zapzap.svg" ]; then
     install -Dm644 "zapzap/assets/icons/com.rtosta.zapzap.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/com.rtosta.zapzap.svg"
