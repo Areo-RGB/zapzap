@@ -183,6 +183,7 @@ class WebView(QWebEngineView):
         # Instala o handler de crash específico para este WebView
         crash_handler.register_profile(self.profile)
         self._inject_webrtc_shield()
+        self._inject_stealth_read()
 
     def _install_ctrl_arrow_visual_navigation_fix(self):
         if SettingsManager.get("web/ctrl_arrow_visual_navigation_fix", True):
@@ -227,6 +228,24 @@ class WebView(QWebEngineView):
                 self.profile.scripts().insert(script)
             except Exception as e:
                 print(f"Error injecting WebRTC shield: {e}")
+
+    def _inject_stealth_read(self):
+        """Inject the stealth read / WAIncognito controller script."""
+        try:
+            base_dir = os.path.dirname(__file__)
+            js_path = os.path.join(base_dir, "scripts", "stealth_read.js")
+            with open(js_path, "r", encoding="utf-8") as f:
+                js_code = f.read()
+
+            script = QWebEngineScript()
+            script.setName("zapzap_stealth_read")
+            script.setInjectionPoint(QWebEngineScript.InjectionPoint.DocumentCreation)
+            script.setRunsOnSubFrames(True)
+            script.setSourceCode(js_code)
+            script.setWorldId(QWebEngineScript.ScriptWorldId.MainWorld)
+            self.profile.scripts().insert(script)
+        except Exception as e:
+            print(f"Error injecting stealth read script: {e}")
 
     def _inject_web_theme_controller(self):
         """Injects the JavaScript code for the ZapZap WAWeb Theme Controller and QWebChannel support."""

@@ -1,0 +1,56 @@
+name: Build CachyOS Package
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      release_upload:
+        description: "Upload CachyOS/Arch package artifact to GitHub Release"
+        required: false
+        type: boolean
+        default: false
+      release_tag:
+        description: "Release tag"
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  build-cachyos-package:
+    name: Build CachyOS Package (.pkg.tar.zst)
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/cachyos/cachyos:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up build environment
+        run: |
+          pacman -Syu --noconfirm base-devel git python python-build python-installer python-wheel python-setuptools python-pyqt6 python-pyqt6-webengine zstd
+          useradd -m builder
+          chown -R builder:builder .
+
+      - name: Build CachyOS / Arch Package
+        run: |
+          su builder -c "makepkg -sc --noconfirm"
+
+      - name: Upload Artifact
+        if: ${{ !inputs.release_upload }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZapZap-CachyOS-Package
+          path: "*.pkg.tar.zst"
+
+      - name: Upload to Release
+        if: ${{ inputs.release_upload }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.release_tag }}
+          files: "*.pkg.tar.zst"

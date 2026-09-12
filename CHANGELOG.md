@@ -13,6 +13,11 @@ releases and the AppStream metadata.
 
 ## [7.4.5] - In development
 
+### Added
+
+- Native Stealth Read mode based on WAIncognito protocol interception to prevent sending read receipts (blue checkmarks) natively.
+- CachyOS / Arch Linux package build workflow (`build-cachyos.yml`) and PKGBUILD.
+
 ### Fixed
 
 - Prevented links opened from an internal WhatsApp popup, such as a call
