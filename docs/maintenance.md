@@ -514,6 +514,7 @@ Workflows mantidos:
 
 <!-- structure-check:workflows:start -->
 - `build-appimage.yml`
+- `build-cachyos.yml`
 - `build-copr.yml`
 - `build-deb.yml`
 - `build-macos.yml`

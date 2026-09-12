@@ -26,7 +26,7 @@ jobs:
     name: Build CachyOS Package (.pkg.tar.zst)
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cachyos/cachyos:latest
+      image: ghcr.io/pkgforge-dev/archlinux:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
